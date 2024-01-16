@@ -1,8 +1,8 @@
 :root {
   font-family: 'Helvetica Neue', system-ui, Avenir, Helvetica, Arial, sans-serif;
 
-  color: black;
-  background-color: white;
+  color: $mainColor;
+  background-color: $mainBackground;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -106,12 +106,21 @@ html {
 }
 
 body {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+}
+
+body ::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+body {
   margin: 0;
   overflow: hidden;
   min-height: 100vh;
 
   a {
-    color: black;
+    color: $mainColor;
     text-decoration: none;
     cursor: pointer;
   }
@@ -162,7 +171,6 @@ body {
 div,
 span {
   display: block;
-  overflow: hidden;
 }
 
 ul,
@@ -235,10 +243,6 @@ a {
   align-items: center;
 }
 
-.loader {
-  border-bottom: solid 1px $dark;
-}
-
 .lenis {
   height: auto;
 }
@@ -258,4 +262,3 @@ a {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
-

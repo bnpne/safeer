@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@sanity/vision": "^3.23.4",
     "@studio-freight/lenis": "latest",
     "events": "^3.3.0",
     "gsap": "^3.12.2",

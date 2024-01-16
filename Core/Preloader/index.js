@@ -2,7 +2,12 @@ import STORE from '../Store'
 import Emitter from '../Emitter'
 import gsap from 'gsap'
 import * as THREE from 'three'
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+
+import {getCaseStudies} from '../Utils/data'
+
+import Home from '../../src/pages/home'
+
+import ImageMaterial from '../Canvas/materials/imageMaterial'
 
 export default class Preloader {
   constructor({el, pagesParent}) {
@@ -18,7 +23,6 @@ export default class Preloader {
         duration: 0.7,
         paused: true,
         onComplete: () => {
-          console.log(this.destroy())
           this.destroy()
         },
       })
@@ -43,67 +47,67 @@ export default class Preloader {
   }
 
   buildPages() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      const c = await getCaseStudies()
+
+      if (c) {
+        if (!STORE.home) {
+          STORE.home = STORE.router.pages['/'] = new Home({cases: c})
+        }
+
+        const media = {}
+
+        c.forEach((ci, i) => {
+          const IMG_TRANSFORM = `?auto=format&w=512`
+          const textureLoader = new THREE.TextureLoader()
+
+          const mediaArray = []
+
+          ci.images.forEach((image, i) => {
+            const url = image.url + IMG_TRANSFORM
+            const dimensions = image.dimensions
+            const tex = textureLoader.load(url)
+
+            const element = {
+              tex: tex,
+              dimensions: dimensions,
+            }
+
+            const mesh = this.loadMesh(element)
+            mediaArray.push(mesh)
+          })
+
+          media[i] = mediaArray
+        })
+
+        STORE.home.media = media
+
+        STORE.home.init()
+      }
       resolve()
     })
   }
-  // loadPage(pageList) {
-  //   return new Promise((resolve) => {
-  //     for (const page of pageList) {
-  //       if (page.path) {
-  //         let p = new page.component({
-  //           html: page.html,
-  //           parent: this.pageParent,
-  //         })
-  //         STATE.dispatch("addPages", [[page.path, p]])
-  //       } else {
-  //         let n = new page.component({
-  //           html: page.html,
-  //           parent: this.pageParent,
-  //         })
-  //         STATE.dispatch("addNav", [n])
-  //       }
-  //     }
-  //     resolve()
-  //   })
-  // }
 
-  // loadTexture(el) {
-  //   const l = new THREE.TextureLoader()
+  loadMesh(element) {
+    if (element) {
+      const plane = new THREE.PlaneGeometry(1, 1)
+      const material = new ImageMaterial({
+        texture: element.tex,
+        imageBounds: [element.dimensions.width, element.dimensions.height],
+        scale: [element.dimensions.aspectRatio, 1],
+      })
 
-  //   return new Promise((resolve, reject) => {
-  //     l.load(
-  //       el,
-  //       function (tex) {
-  //         gsap.to(STATE.loader, {
-  //           width: "50%",
-  //         })
-  //         resolve(tex)
-  //       },
-  //       undefined,
-  //       function (err) {
-  //         reject(err)
-  //       }
-  //     )
-  //   })
-  // }
+      material.material.userData.dimensions = element.dimensions
 
-  // loadGLTF() {
-  //   const gltfLoader = new GLTFLoader()
+      const mesh = new THREE.Mesh(plane, material.material)
+      mesh.frustumCulled = false
+      STORE.scene.add(mesh)
 
-  //   return new Promise((resolve, reject) => {
-  //     gltfLoader.load(
-  //       "/model/r5.glb",
-  //       function (glb) {
-  //         resolve(glb)
-  //       },
-  //       undefined,
-  //       function (err) {
-  //         console.log("error")
-  //       }
-  //     )
-  //   })
-  // }
+      return mesh
+    } else {
+      return
+    }
+  }
 
   loaded() {
     this.em.emit('completed')

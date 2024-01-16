@@ -56,10 +56,12 @@ class App {
         this.url = data
       }
 
-      this.pages = {
-        '/': new Home(),
-        '/info': new Info(),
-      }
+      // this.pages = {
+      //   '/': new Home(),
+      //   '/info': new Info(),
+      // }
+
+      this.pages = {}
 
       STORE.router = new Router({
         pages: this.pages,
@@ -77,13 +79,13 @@ class App {
         content: this.app,
       })
 
-      R.add(time => {
-        STORE.lenis.raf(time)
-      }, 0)
+      // R.add(time => {
+      //   STORE.lenis.raf(time)
+      // }, 0)
 
-      STORE.lenis.on('scroll', () => {
-        ScrollTrigger.refresh()
-      })
+      // STORE.lenis.on('scroll', () => {
+      //   ScrollTrigger.refresh()
+      // })
       CustomEase.create('easeOutCubic', '0.33, 1, 0.68, 1')
 
       this.canvas = new Canvas({el: r})
@@ -105,17 +107,21 @@ class App {
   init() {
     R.add(() => this.loop())
 
-    STORE.lenis.on('scroll', ({scroll}) => console.log(scroll))
+    // STORE.lenis.on('scroll', ({scroll}) => {
+    //   STORE.router.tree.currentPage.scroll(scroll)
+    // })
 
     this.resize()
     this.listeners()
     this.linkListeners()
 
-    console.log(STORE.preloadTimeline)
     STORE.preloadTimeline.play()
   }
 
   listeners() {
+    window.addEventListener('wheel', this.wheel.bind(this), {
+      passive: true,
+    })
     window.addEventListener('resize', this.resize.bind(this), {
       passive: true,
     })
@@ -152,6 +158,10 @@ class App {
   popState() {
     STORE.dispatch('setUrl', [window.location.pathname])
     STORE.router.route()
+  }
+
+  wheel(e) {
+    // console.log(e)
   }
 
   resize() {

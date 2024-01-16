@@ -7,6 +7,7 @@ export default class Page {
     this.active = false
     this.path = path ?? null
     this.template = null
+    this.injected = false
 
     this.create()
   }
