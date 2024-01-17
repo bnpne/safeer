@@ -1,11 +1,11 @@
 import './styles/index.scss'
 
 // Core
-import STORE from '../Core/Store'
-import R from '../Core/R'
-import Canvas from '../Core/Canvas'
-import Preloader from '../Core/Preloader'
-import Router from '../Core/Router'
+import STORE from '@Boiler/Store'
+import R from '@Boiler/R'
+import Canvas from '@Boiler/Canvas'
+import Preloader from '@Boiler/Preloader'
+import Router from '@Boiler/Router'
 
 // Helpers
 import Lenis from '@studio-freight/lenis'
@@ -21,7 +21,7 @@ import Info from './pages/info'
 
 // Admin
 import {renderStudio} from 'sanity'
-import {config} from '../Core/Admin'
+import {config} from '@Boiler/Admin'
 
 gsap.registerPlugin(ScrollTrigger, CustomEase)
 

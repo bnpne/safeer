@@ -21,6 +21,7 @@ export default defineConfig({
     },
     alias: {
       '@VirtualDom': resolve(__dirname, 'Core/VirtualDom/index.js'),
+      '@Boiler': resolve(__dirname, 'Core/'),
     },
   },
 })

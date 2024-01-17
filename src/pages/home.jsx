@@ -1,38 +1,49 @@
 import gsap from 'gsap'
-import Page from '../../Core/Page/Page'
-import STORE from '../../Core/Store'
+import Page from '@Boiler/Page/Page'
+import STORE from '@Boiler/Store'
 
 function homeHtml(cases) {
   return (
     <section id="page" class="home">
       <div class="home__container">
-        {cases &&
-          cases.map((c, i) => (
-            <div key={i} class="home__images">
-              <div class="home__images--container">
-                <div class="home__images--nav">
-                  <span class="home__images--nav__left"></span>
-                  <span class="home__images--nav__right"></span>
-                </div>
-                {c.images.length > 0 &&
-                  c.images.map((image, index) => (
-                    <div
-                      style={`z-index: ${
-                        c.images.length - index
-                      }; aspect-ratio: ${image.dimensions.aspectRatio};`}
-                      class="home__images--wrapper"
-                      data-image-case={i}
-                    >
-                      <img
-                        class="home__images--image"
-                        src={image.url}
-                        alt={`iamge-${i}-${index}`}
-                      />
-                    </div>
-                  ))}
-              </div>
+        <div class="home__images">
+          <div class="home__images--container">
+            <div class="home__images--nav">
+              <span class="home__images--nav__left"></span>
+              <span class="home__images--nav__right"></span>
             </div>
-          ))}
+            {cases &&
+              cases.map((c, i) => (
+                <div class="home__images--dom" key={i}>
+                  {c.images.length > 0 &&
+                    c.images.map((image, index) => (
+                      <div
+                        style={`z-index: ${
+                          c.images.length - index
+                        }; aspect-ratio: ${image.dimensions.aspectRatio};`}
+                        class="home__images--wrapper"
+                        data-image-case={i}
+                      >
+                        <img
+                          class="home__images--image"
+                          src={image.url}
+                          alt={`iamge-${i}-${index}`}
+                        />
+                      </div>
+                    ))}
+                </div>
+              ))}
+          </div>
+          <div class="home__images--info">
+            <p data-info-title>ABOUT+</p>
+            <p style="display: inline-flex;">
+              <span data-current-image-index></span>
+              <span>/</span>
+              <span data-current-image-total></span>
+            </p>
+            <p data-info-next>NEXT PROJECT</p>
+          </div>
+        </div>
         {cases &&
           cases.map((c, i) => (
             <div key={i} class="home__title">
@@ -61,12 +72,20 @@ export default class Home extends Page {
     this.navLeft = this.template.querySelector('.home__images--nav__left')
     this.navRight = this.template.querySelector('.home__images--nav__right')
     this.mainImages = this.template.querySelectorAll('[data-image-case]')
+    this.info = this.template.querySelector('.home__images--info')
+    this.infoTitle = this.template.querySelector('[data-info-title]')
+    this.infoImageIndex = this.template.querySelector(
+      '[data-current-image-index]',
+    )
+    this.infoImageTotal = this.template.querySelector(
+      '[data-current-image-total]',
+    )
+    this.infoNext = this.template.querySelector('[data-info-next]')
 
     if (this.media) {
       this.currentMedia = this.media[this.currentCaseIndex]
-      this.displayReference = this.template.querySelectorAll(
-        `[data-image-case="${this.currentCaseIndex}"]`,
-      )[0]
+      this.displayReference =
+        this.template.querySelectorAll('[data-image-case]')
       this.positionAnima = this.currentMedia.map(m => {
         return m.position
       })
@@ -85,8 +104,25 @@ export default class Home extends Page {
   onInject() {
     super.onInject()
     // set display image
-    this.displayReferenceBounds = this.displayReference.getBoundingClientRect()
+    this.displayReferenceBounds =
+      this.displayReference[this.currentCaseIndex].getBoundingClientRect()
     this.resizeDisplay(this.media[0][0])
+    this.setInfo()
+  }
+
+  setInfo() {
+    if (
+      this.info &&
+      this.infoTitle &&
+      this.infoImageIndex &&
+      this.infoImageTotal &&
+      this.infoNext
+    ) {
+      this.info.style.maxWidth = `${this.displayReferenceBounds.width}px`
+
+      this.infoImageIndex.innerHTML = this.currentImageIndex + 1
+      this.infoImageTotal.innerHTML = this.currentMedia.length
+    }
   }
 
   resizeMedia() {
@@ -158,6 +194,7 @@ export default class Home extends Page {
         STORE.positionArray.push(STORE.viewport.width * 0.35 + offset)
       } else if (index < imageIndex) {
         const offset = index - imageIndex + 1
+
         STORE.positionArray.push(-STORE.viewport.width * 0.35 + offset)
       }
     })
@@ -165,6 +202,7 @@ export default class Home extends Page {
 
   setMediaPosition(imageIndex) {
     this.currentMedia.forEach((mesh, index) => {
+      console.log(mesh)
       if (index === imageIndex) {
         mesh.position.x = 0
       } else if (index > imageIndex) {
@@ -188,7 +226,6 @@ export default class Home extends Page {
   }
 
   animateMediaScale() {
-    console.log(this.scaleAnima)
     gsap.to(this.scaleAnima, {
       x: function (index) {
         return STORE.scaleArray[index].width
@@ -199,6 +236,10 @@ export default class Home extends Page {
       duration: 0.7,
       ease: 'easeOutCubic',
     })
+  }
+
+  nextCase() {
+    console.log('gping to next')
   }
 
   addListeners() {
@@ -213,6 +254,7 @@ export default class Home extends Page {
           this.scaleMedia(this.currentImageIndex)
           this.animateMediaPosition()
           this.animateMediaScale()
+          this.infoImageIndex.innerHTML = this.currentImageIndex + 1
         }
       })
       this.navRight.addEventListener('click', () => {
@@ -225,7 +267,13 @@ export default class Home extends Page {
           this.scaleMedia(this.currentImageIndex)
           this.animateMediaPosition()
           this.animateMediaScale()
+          this.infoImageIndex.innerHTML = this.currentImageIndex + 1
         }
+      })
+    }
+    if (this.infoTitle && this.infoNext) {
+      this.infoNext.addEventListener('click', () => {
+        this.nextCase()
       })
     }
   }

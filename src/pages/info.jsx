@@ -1,4 +1,4 @@
-import Page from '../../Core/Page/Page'
+import Page from '@Boiler/Page/Page'
 
 function infoHtml() {
   return (

@@ -91,10 +91,14 @@ export default class Preloader {
   loadMesh(element) {
     if (element) {
       const plane = new THREE.PlaneGeometry(1, 1)
+
       const material = new ImageMaterial({
         texture: element.tex,
         imageBounds: [element.dimensions.width, element.dimensions.height],
-        scale: [element.dimensions.aspectRatio, 1],
+        scale:
+          element.dimensions.aspectRatio <= 1
+            ? [element.dimensions.aspectRatio, 1]
+            : [1, 1 / element.dimensions.aspectRatio],
       })
 
       material.material.userData.dimensions = element.dimensions

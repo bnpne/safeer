@@ -29,6 +29,10 @@
     width: 100%;
     position: relative;
 
+    &--dom {
+      opacity: 0;
+    }
+
     &--container {
       height: 100%;
       width: 100%;
@@ -69,6 +73,24 @@
       &__right {
         flex: 50%;
         cursor: e-resize;
+      }
+    }
+
+    &--info {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 1.6rem 0 0 0;
+      width: 100%;
+      font-size: 1rem;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #aaa;
+
+      & > [data-info-next] {
+        cursor: pointer;
       }
     }
   }
