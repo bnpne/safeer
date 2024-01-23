@@ -26,7 +26,7 @@ const URL = `https://${
 export async function getCaseStudies() {
   return new Promise(async resolve => {
     let queryEncoded = encodeURIComponent(
-      '*[_type == "caseStudy"]{"images": caseImages[]{"url": asset->url, "dimensions":asset->metadata.dimensions},  ...}',
+      '*[_type == "caseStudy" ]{"images": caseImages[]{"url": asset->url, "dimensions":asset->metadata.dimensions},  ...}| order(_createdAt asc)',
     )
 
     let queryUrl = URL + queryEncoded

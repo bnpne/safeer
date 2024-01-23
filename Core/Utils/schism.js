@@ -128,8 +128,6 @@ export default class schism {
             splitWord = ['&']
           }
 
-          console.log(splitWord)
-
           // remove word node
           c.removeChild(childNode)
 

@@ -87,6 +87,17 @@ export default class Home extends Page {
   }
 
   init() {
+    this.mainNav = document.querySelector('#nav')
+
+    if (this.mainNav) {
+      this.navWords = this.mainNav.querySelectorAll('[data-word]')
+    }
+    console.log(this.navWords)
+    const navAnima = []
+    this.navWords.forEach(nv => {
+      const s = new schism({target: nv, mutation: 'chars'})
+      navAnima.push(s.charArray)
+    })
     this.navLeft = this.template.querySelector('.home__images--nav__left')
     this.navRight = this.template.querySelector('.home__images--nav__right')
     this.mainImages = this.template.querySelectorAll('[data-image-case]')
@@ -136,10 +147,23 @@ export default class Home extends Page {
 
     this.addListeners()
 
-    STORE.preloadTimeline.to(this.titleAnima, {
-      y: '0%',
-      stagger: 0.015,
-    })
+    STORE.preloadTimeline
+      .fromTo(
+        navAnima,
+        {y: '100%'},
+        {
+          y: '0%',
+          stagger: 0.015,
+        },
+      )
+      .to(
+        this.titleAnima,
+        {
+          y: '0%',
+          stagger: 0.015,
+        },
+        '>-50%',
+      )
   }
 
   onInject() {
