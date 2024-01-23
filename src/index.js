@@ -86,7 +86,8 @@ class App {
       // STORE.lenis.on('scroll', () => {
       //   ScrollTrigger.refresh()
       // })
-      CustomEase.create('easeOutCubic', '0.33, 1, 0.68, 1')
+      CustomEase.create('easeOutCubic', '0.22, 1, 0.36, 1')
+      CustomEase.create('easeInQuint', '0.64, 0, 0.78, 0')
 
       this.canvas = new Canvas({el: r})
 
@@ -166,7 +167,6 @@ class App {
 
   resize() {
     this.canvas && this.canvas.resize()
-    STORE.allez && STORE.allez.checkResize()
     STORE.router.tree.currentPage.resize()
   }
 

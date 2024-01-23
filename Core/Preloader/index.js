@@ -58,7 +58,7 @@ export default class Preloader {
         const media = {}
 
         c.forEach((ci, i) => {
-          const IMG_TRANSFORM = `?auto=format&w=512`
+          const IMG_TRANSFORM = `?auto=format&w=1000`
           const textureLoader = new THREE.TextureLoader()
 
           const mediaArray = []
